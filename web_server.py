@@ -1,17 +1,18 @@
 from flask import Flask, render_template
 import datetime
+import water
 import os
 
 app = Flask(__name__)
 
 def template(title="HELLO!",text=""):
-	time = datetime.datetime.now()
-	templateDate = {
+    time = datetime.datetime.now()
+    templateDate = {
         'title': title,
         'time' : time,
         'text' : text
         }
-	return templateDate
+    return templateDate
 @app.route("/")
 def hello():
     templateData = template()
@@ -41,15 +42,17 @@ def action2():
     return render_template('main.html', **templateData)
 
 @app.route("/auto/water/<toggle>")
-def auto_water(toggle): 
-	if toggle == "ON":
-		templateData = template(text = "Auto Watering On")
-		water.auto_water()
-	elif toggle == "OFF":
-		templateData = template(text = "Auto Watering Off")
-		os.system("pkill -f water.py")
+def auto_water(toggle):
+    if toggle == "ON":
+        templateData = template(text = "Auto Watering On")
+        os.system("python auto_water.py & ")
+    else:
+        templateData = template(text = "Auto Watering Off")
+        os.system("pkill -f auto_water.py")
+        water.pump_off()
 
-	return render_template('main.html', **templateData)
+    return render_template('main.html', **templateData)
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=80, debug=True)
+
