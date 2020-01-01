@@ -1,7 +1,8 @@
 import RPi.GPIO as GPIO
 import datetime
+import time
 
-GPIO.setmode(GPIO.BCM)
+GPIO.setmode(GPIO.BOARD)
 
 def get_last_watered():
     try:
@@ -12,32 +13,23 @@ def get_last_watered():
         return "NEVER!"
 
 def get_status(pin=8):
-    GPIO.setup(pin ,GPIO.in)
+    GPIO.setup(pin ,GPIO.IN)
     return GPIO.input(pin)
 
 def init_output(pin):
-    GPIO.setup(pin, GPIO.out)
+    GPIO.setup(pin, GPIO.OUT)
     GPIO.output(pin, GPIO.LOW)
     GPIO.output(pin, GPIO.HIGH)
 
 def pump_on(pump_pin=7):
     init_output(pump_pin)
-    GPIO.output(pump_pin, GPIO.HIGH)
-    f=open('last_watered.txt',"w")
+    f = open("last_watered.txt", "w")
     f.write("Last watered {}".format(datetime.datetime.now()))
     f.close()
-
-def auto_water():
-    while True:
-        status=get_status()
-        if status==1:
-            init_output(pump_pin)
-            GPIO.output(pump_pin, GPIO.HIGH)           
-        else:
-            GPIO.output(pump_pin, GPIO.LOW)
-            break
-
-
-
-
-
+    GPIO.output(pump_pin, GPIO.LOW)
+    time.sleep(1)
+    GPIO.output(pump_pin, GPIO.HIGH)
+    
+def pump_off(pump_pin=7):
+    init_output(pump_pin)
+    GPIO.output(pump_pin, GPIO.HIGH)
