@@ -28,9 +28,9 @@ def action():
     status = water.get_status()
     message = ""
     if (status == 1):
-        message = "Water me please!"
+        message = "Dry"
     else:
-        message = "I'm a happy plant"
+        message = "Wet"
 
     templateData = template(text = message)
     return render_template('main.html', **templateData)
@@ -55,4 +55,3 @@ def auto_water(toggle):
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=80, debug=True)
-
